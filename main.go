@@ -93,4 +93,6 @@ func fourth() {
 	board := wordsearch.ParseBoard(string(contents))
 	// fmt.Println("Board: ", board)
 	fmt.Println("Found: ", wordsearch.WordSearch(board, "XMAS"))
+
+	fmt.Println("Crosses: ", wordsearch.FindCrosses(board))
 }

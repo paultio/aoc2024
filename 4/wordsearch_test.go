@@ -92,3 +92,95 @@ func TestSearchDiagonals(t *testing.T) {
 		}
 	}
 }
+
+func TestFindLocations(t *testing.T) {
+	tests := []struct {
+		line     string
+		word     string
+		expected [][2]int
+	}{
+		{"hello", "he", [][2]int{{0, 1}}},
+		{"hello", "lo", [][2]int{{3, 4}}},
+		{"hello", "hello", [][2]int{{0, 4}}},
+		{"hello", "world", [][2]int{}},
+		{"hellohello", "hello", [][2]int{{0, 4}, {5, 9}}},
+		{"", "hello", [][2]int{}},
+		{"hello", "", [][2]int{}},
+		{"aaaaa", "aa", [][2]int{{0, 1}, {1, 2}, {2, 3}, {3, 4}}},
+	}
+
+	for _, test := range tests {
+		result := findLocations(test.line, test.word)
+		if !equalLocations(result, test.expected) {
+			t.Errorf("findLocations(%q, %q) = %v; expected %v", test.line, test.word, result, test.expected)
+		}
+	}
+}
+
+func TestFindCrosses(t *testing.T) {
+	tests := []struct {
+		board    [][]byte
+		expected int
+	}{
+		{[][]byte{
+			{'S', 'S', 'S'},
+			{'S', 'A', 'S'},
+			{'S', 'S', 'S'},
+		}, 0},
+		{[][]byte{
+			{'M', 'S', 'M'},
+			{'S', 'A', 'S'},
+			{'M', 'S', 'M'},
+		}, 0},
+		{[][]byte{
+			{'M', 'S', 'S'},
+			{'S', 'A', 'S'},
+			{'M', 'S', 'S'},
+		}, 1},
+		{[][]byte{
+			{'M', 'S', 'M', 'S'},
+			{'S', 'A', 'S', 'A'},
+			{'S', 'S', 'S', 'S'},
+			{'S', 'A', 'S', 'A'},
+		}, 1},
+
+		{[][]byte{
+			{'M', 'S', 'M', 'S', 'M'},
+			{'S', 'A', 'S', 'A', 'S'},
+			{'S', 'S', 'S', 'S', 'S'},
+			{'S', 'A', 'S', 'A', 'S'},
+			{'M', 'S', 'M', 'S', 'M'},
+		}, 4},
+	}
+
+	for _, test := range tests {
+		result := FindCrosses(test.board)
+		if result != test.expected {
+			t.Errorf("findCrosses(%q) = %d; expected %d", test.board, result, test.expected)
+		}
+	}
+}
+
+func equalLocations(a, b [][2]int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i][0] != b[i][0] || a[i][1] != b[i][1] {
+			return false
+		}
+	}
+	return true
+}
+
+func equal(a, b [][]int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if len(a[i]) != len(b[i]) || a[i][0] != b[i][0] || a[i][1] != b[i][1] {
+			return false
+		}
+	}
+	return true
+}

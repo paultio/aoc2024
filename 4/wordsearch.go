@@ -148,3 +148,135 @@ func searchDiagonals(board [][]byte, word string) int {
 	}
 	return found
 }
+
+func FindCrosses(board [][]byte) int {
+	found := 0
+	for i := 1; i < len(board)-1; i++ {
+		for j := 1; j < len(board[0])-1; j++ {
+			/*
+				Searching for these kinds of patterns:
+				S.S.S.S.S.
+				.A.A.A.A..
+				M.M.M.M.M.
+
+				A in the center, 2 M-s in corners, 2 opposing S-s in the other corners
+
+				**/
+			masFound := 0
+
+			if board[i][j] != 'A' {
+				continue
+			}
+			if board[i-1][j-1] == 'M' {
+				if board[i+1][j+1] != 'S' {
+					continue
+				}
+				masFound++
+			}
+
+			if board[i-1][j+1] == 'M' {
+				if board[i+1][j-1] != 'S' {
+					continue
+				}
+				masFound++
+			}
+
+			if board[i+1][j-1] == 'M' {
+				if board[i-1][j+1] != 'S' {
+					continue
+				}
+				masFound++
+			}
+
+			if board[i+1][j+1] == 'M' {
+				if board[i-1][j-1] != 'S' {
+					continue
+				}
+				masFound++
+			}
+			if masFound == 2 {
+				found++
+			}
+
+		}
+	}
+	return found
+}
+
+func findLocations(line string, word string) [][2]int {
+	if len(word) == 0 {
+		return nil
+	}
+	if len(line) == 0 {
+		return nil
+	}
+	found := 0
+	beginAt := 0
+	locations := [][2]int{}
+	for i := 0; i < len(line); i++ {
+		if line[i] == word[0] {
+			beginAt = i
+			// Check if the word fits in the line
+			if i+len(word) > len(line) {
+				return locations
+			}
+
+			// Check if the word is in the line
+			for j := 0; j < len(word); j++ {
+				if line[i+j] != word[j] {
+					break
+				}
+				if j == len(word)-1 {
+					found++
+					endAt := i + j
+					locations = append(locations, [2]int{beginAt, endAt})
+					i = beginAt
+				}
+			}
+		}
+	}
+
+	return locations
+}
+
+func locateOnDiagonals(board [][]byte, word string) int {
+	found := 0
+	locations := [][2]int{}
+
+	// Top left to bottom right
+	for i := 0; i < len(board); i++ {
+		var diagonal []byte
+		for j := 0; j < len(board)-i; j++ {
+			diagonal = append(diagonal, board[j][j+i])
+		}
+		locations = append(locations, findLocations(string(diagonal), word)...)
+		found += searchLine(string(diagonal), word)
+		found += searchLine(reverseString(string(diagonal)), word)
+	}
+	for i := 1; i < len(board); i++ {
+		var diagonal []byte
+		for j := 0; j < len(board)-i; j++ {
+			diagonal = append(diagonal, board[j+i][j])
+		}
+		found += searchLine(string(diagonal), word)
+		found += searchLine(reverseString(string(diagonal)), word)
+	}
+	// Top right to bottom left
+	for i := 0; i < len(board); i++ {
+		var diagonal []byte
+		for j := 0; j < len(board)-i; j++ {
+			diagonal = append(diagonal, board[j][len(board)-1-j-i])
+		}
+		found += searchLine(string(diagonal), word)
+		found += searchLine(reverseString(string(diagonal)), word)
+	}
+	for i := 1; i < len(board); i++ {
+		var diagonal []byte
+		for j := 0; j < len(board)-i; j++ {
+			diagonal = append(diagonal, board[j+i][len(board)-1-j])
+		}
+		found += searchLine(string(diagonal), word)
+		found += searchLine(reverseString(string(diagonal)), word)
+	}
+	return found
+}
