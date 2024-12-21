@@ -74,3 +74,21 @@ func CheckLevelSafety(levels []int) bool {
 
 	return true
 }
+
+func ProblemDampener(levels []int) bool {
+	// Safe if CheckLevelSafety is true with some element removed
+	// fmt.Println("\n", levels, " -> ")
+	for idx := range levels {
+		// Remove element at idx
+		var newLevels []int
+		newLevels = append(newLevels, levels[:idx]...)
+		newLevels = append(newLevels, levels[idx+1:]...)
+		// fmt.Println(newLevels)
+		if CheckLevelSafety(newLevels) {
+			// fmt.Println("v")
+			return true
+		}
+	}
+	// fmt.Println("x")
+	return false
+}
