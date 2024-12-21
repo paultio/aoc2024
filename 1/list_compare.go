@@ -44,3 +44,27 @@ func ListCompare(l1 []int, l2 []int) int {
 	}
 	return totalDiff
 }
+
+func SimilarityScore(l1 []int, l2 []int) int {
+	similarity := 0
+
+	for _, num := range l1 {
+		similarity += num * nTimesInList(num, l2)
+	}
+
+	return similarity
+}
+
+func nTimesInList(n int, list []int) int {
+	var cache = make(map[int]int)
+	if ret, ok := cache[n]; ok {
+		return ret
+	}
+
+	for _, num := range list {
+		if num == n {
+			cache[n]++
+		}
+	}
+	return cache[n]
+}

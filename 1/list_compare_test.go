@@ -44,7 +44,25 @@ func TestReadIntsFromFile(t *testing.T) {
 		}
 	}
 }
+func TestSimilarityScore(t *testing.T) {
+	tests := []struct {
+		l1       []int
+		l2       []int
+		expected int
+	}{
+		{[]int{1, 2, 3}, []int{3, 2, 1}, 6},
+		{[]int{1, 1, 1}, []int{1, 1, 1}, 9},
+		{[]int{1, 2, 3}, []int{4, 5, 6}, 0},
+		{[]int{3, 4, 2, 1, 3, 3}, []int{4, 3, 5, 3, 9, 3}, 31},
+	}
 
+	for _, test := range tests {
+		result := SimilarityScore(test.l1, test.l2)
+		if result != test.expected {
+			t.Errorf("SimilarityScore(%v, %v) = %v; expected %v", test.l1, test.l2, result, test.expected)
+		}
+	}
+}
 func equalSlices(a, b []int) bool {
 	if len(a) != len(b) {
 		return false
