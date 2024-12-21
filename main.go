@@ -5,12 +5,13 @@ import (
 	nuclear "aoc/2"
 	mul "aoc/3"
 	wordsearch "aoc/4"
+	pageordering "aoc/5"
 	"fmt"
 	"os"
 )
 
 func main() {
-	fourth()
+	fifth()
 }
 
 func first() {
@@ -95,4 +96,34 @@ func fourth() {
 	fmt.Println("Found: ", wordsearch.WordSearch(board, "XMAS"))
 
 	fmt.Println("Crosses: ", wordsearch.FindCrosses(board))
+}
+
+func fifth() {
+	filename := "./5/page_ordering.txt"
+	// filename := "./5/test_data.txt"
+	file, err := os.Open(filename)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+	contents, err := os.ReadFile(filename)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	rules, orders := pageordering.ParseFromStr(string(contents))
+
+	indexes := pageordering.ApplyRules(rules, orders)
+	fmt.Println("Correct indexes: ", indexes)
+	correct_pages := []int{}
+	sum := 0
+	for i := range indexes {
+		// fmt.Println("Correct order: ", orders[i], "middle page: ", orders[i][len(orders[i])/2])
+		sum += orders[i][len(orders[i])/2]
+		correct_pages = append(correct_pages, orders[i][len(orders[i])/2])
+	}
+	fmt.Println("Sum: ", sum)
+	fmt.Println("Middle pages: ", correct_pages)
 }
